@@ -50,9 +50,25 @@ export default function Episode({ episode }: EpisodeProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const { data } = await api.get('episodes', {
+    params: {
+      _limit: 2,
+      _sort: 'published_at',
+      _order: 'desc'
+    }
+  })
+
+  const paths = data.map(episode => {
+    return {
+      params: {
+        slug: episode.id,
+      }
+    }
+  })
+
   return {
-    paths: [],
-    fallback: 'blocking'
+    paths, //se adicionar um episódio dentro de path, ele gera uma página estática na hora da build
+    fallback: 'blocking' //true faz criar páginas estáticas na hora pelo lado do browser, blocking faz criar no servidor do next e false retorna 404;
   }
 }
 
